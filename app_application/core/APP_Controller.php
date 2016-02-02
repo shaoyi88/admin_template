@@ -67,6 +67,7 @@ class APP_Controller extends CI_Controller
 		$this->load->library(array('Smarty_ext', 'session'));
 		$this->load->helper(array('url'));	
 		$this->config->load('app_config');
+		$this->load->database();
 		$this->_getUserInfo();
 	}
 	

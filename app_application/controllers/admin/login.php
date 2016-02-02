@@ -34,11 +34,10 @@ class Login extends APP_Controller
 		if(($userPassword = $this->input->post('userPassword', TRUE)) === FALSE){
 			redirect(formatUrl('login/index?msg='.urlencode('请填写密码')));
 		}
-		//检测登录ToDo
-		$adminInfo = array();
-		$adminInfo['admin_id'] = 12345;
-		$adminInfo['admin_name'] = 'admin';
-		$adminInfo['admin_role'] = 0;
+		$this->load->model('APP_Admin');
+		if(($adminInfo = $this->APP_Admin->checkAdmin($userAccount, $userPassword)) === FALSE){
+			redirect(formatUrl('login/index?msg='.urlencode('账户或密码错误')));
+		}
 		
 		$info = array(
 			'admin_id' => $adminInfo['admin_id'],
@@ -47,8 +46,8 @@ class Login extends APP_Controller
 		if($adminInfo['admin_role'] == 0){
 			$info['admin_rights'] = 'all';
 		}else{
-			$roleInfo['role_rights'] = 'all'; //模拟获取角色权限
-			
+			$this->load->model('APP_Admin');
+			$roleInfo = $this->APP_Admin->getInfo($adminInfo['admin_role']);
 			$info['admin_rights'] = $roleInfo['role_rights'];
 		}
 		$this->session->set_userdata($info);
